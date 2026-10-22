@@ -183,6 +183,7 @@ const DCMini = (() => {
     el.__h = el.__h || {};
     for (const an in old) {
       if (an in props) continue;
+      if (an === 'ref') continue;
       if (isEvent(an)) { el.__h[eventName(el, an)] = null; continue; }
       if (PROP.has(an)) el[an] = false;
       el.removeAttribute(an);
@@ -190,6 +191,11 @@ const DCMini = (() => {
     for (const an in props) {
       const v = props[an];
       if (old[an] === v && an !== 'value' && !PROP.has(an)) continue;
+      if (an === 'ref') {
+        if (typeof v === 'function') v(el);
+        else if (v && typeof v === 'object') v.current = el;
+        continue;
+      }
       if (isEvent(an)) {
         const ev = eventName(el, an);
         if (!(ev in el.__h)) el.addEventListener(ev, (e) => { const f = el.__h[ev]; if (typeof f === 'function') f(e); });
