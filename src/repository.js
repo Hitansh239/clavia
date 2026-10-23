@@ -3,7 +3,9 @@
 
    The screens are the Repository prototype (Design artifact "Clavia
    Repository Prototype"), rendered by dc-mini.js from repository-dc.js:
-   documents, review, counterparties, imports and the document view.
+   the documents list with its folders, filters and dialogs, and the
+   document view. (Counterparties, Import history, the full details page
+   and the Review page were removed on 23 Oct.)
    The prototype's other screens — its own New Chat, the pages it only
    points at, and Admin — are not part of this build: going to one of
    them goes to the app's own page instead, or says so.
@@ -20,7 +22,7 @@ const repoCls = (s) => s.split(/\s+/).filter(Boolean).map(repoRename).join(' ');
 const repoSel = (sel) => sel.replace(/\.((?:rt|cq|sh)-[\w-]+|(?:trow|cq|mx-tile)(?![\w-]))/g, '.rp-$1');
 
 function repoExtend(Base) {
-  const OK = ['repo', 'record', 'review'];
+  const OK = ['repo'];
   return class RepoComponent extends Base {
     renderVals() {
       const v = super.renderVals();
