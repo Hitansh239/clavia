@@ -102,6 +102,8 @@ const DCMini = (() => {
     return root;
   }
 
+  const BOOL = new Set(['checked', 'disabled', 'selected', 'multiple', 'readonly', 'required', 'hidden', 'open', 'autofocus']);
+
   /* ---- holes ---- */
   const HOLE = /\{\{([^}]*)\}\}/g;
   function lookup(path, scopes) {
@@ -153,7 +155,8 @@ const DCMini = (() => {
       const props = {};
       for (const [an, av] of k.attrs) {
         if (an.startsWith('hint-')) continue;
-        let v = value(av, scopes);
+        /* a bare boolean attribute (<button disabled>) is on, as in HTML */
+        let v = av === '' && BOOL.has(an) ? true : value(av, scopes);
         if (an === 'class' && cls) v = cls(str(v));
         props[an] = v;
       }
