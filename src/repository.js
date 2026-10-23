@@ -14,10 +14,10 @@
 
 const REPO = { mounted: null };
 
-/* rt-, cq-, sh-, cq and trow are already class names in the app's stylesheets */
-const repoRename = (t) => (/^(rt|cq|sh)-/.test(t) || t === 'trow' || t === 'cq' ? 'rp-' + t : t);
+/* rt-, cq-, sh-, cq, trow and mx-tile are already class names in the app's stylesheets */
+const repoRename = (t) => (/^(rt|cq|sh)-/.test(t) || t === 'trow' || t === 'cq' || t === 'mx-tile' ? 'rp-' + t : t);
 const repoCls = (s) => s.split(/\s+/).filter(Boolean).map(repoRename).join(' ');
-const repoSel = (sel) => sel.replace(/\.((?:rt|cq|sh)-[\w-]+|(?:trow|cq)(?![\w-]))/g, '.rp-$1');
+const repoSel = (sel) => sel.replace(/\.((?:rt|cq|sh)-[\w-]+|(?:trow|cq|mx-tile)(?![\w-]))/g, '.rp-$1');
 
 function repoExtend(Base) {
   const OK = ['repo', 'record', 'review'];
