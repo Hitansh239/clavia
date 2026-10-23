@@ -36,10 +36,31 @@ function repoExtend(Base) {
         if (to) { setTimeout(() => go(views.has(to) ? to : 'home'), 0); return; }
         return super.setState({ note: 'Admin settings are not part of this build yet.' }, cb);
       }
-      return super.setState(p, cb);
+      const r = super.setState(p, cb);
+      if (p && 'docPanel' in p) setTimeout(repoTrackDoc, 0);
+      return r;
     }
   };
 }
+
+/* A document opens the way an Intake request does: the browser's Back
+   returns to the list, and coming back to the Repository from another
+   page shows the list. The address stays #vault, so opening a document
+   adds a history step with the same address (pushState), which Back
+   takes away again. */
+let repoOpenDoc = '';
+function repoTrackDoc() {
+  const inst = REPO.mounted && REPO.mounted.inst;
+  const id = (inst && inst.state.docPanel) || '';
+  if (id && !repoOpenDoc) history.pushState({ rpDoc: true }, '', location.href);
+  if (!id && repoOpenDoc && history.state && history.state.rpDoc) { REPO.skipPop = true; history.back(); }
+  repoOpenDoc = id;
+}
+window.addEventListener('popstate', () => {
+  if (REPO.skipPop) { REPO.skipPop = false; return; }
+  const inst = REPO.mounted && REPO.mounted.inst;
+  if (inst && inst.state.docPanel && !(history.state && history.state.rpDoc)) inst.setState({ docPanel: '' });
+});
 
 function repositoryView() {
   if (!REPO.mounted) {
@@ -55,6 +76,8 @@ function repositoryView() {
       extend: repoExtend,
     });
   } else {
+    /* arriving at the Repository (from the rail or another page) shows the list */
+    if (REPO.mounted.inst.state.docPanel) REPO.mounted.inst.setState({ docPanel: '' });
     REPO.mounted.render();
   }
   return REPO.mounted.el;
